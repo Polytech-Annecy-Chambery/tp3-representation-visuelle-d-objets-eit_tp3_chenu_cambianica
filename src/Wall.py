@@ -29,8 +29,8 @@ class Wall:
             raise Exception('Parameter "height" required.')   
         if 'orientation' not in self.parameters:
             self.parameters['orientation'] = 0              
-        if 'thickness' not in self.parameters:
-            self.parameters['thickness'] = 0.2    
+        if 'thick' not in self.parameters:
+            self.parameters['thick'] = 0.2    
         if 'color' not in self.parameters:
             self.parameters['color'] = [0.5, 0.5, 0.5]       
             
@@ -40,7 +40,7 @@ class Wall:
         # Adds a Section for this object
         self.parentSection = Section({'width': self.parameters['width'], \
                                       'height': self.parameters['height'], \
-                                      'thickness': self.parameters['thickness'], \
+                                      'thick': self.parameters['thick'], \
                                       'color': self.parameters['color'],
                                       'position': self.parameters['position']})
         self.objects.append(self.parentSection) 
@@ -68,6 +68,14 @@ class Wall:
                     
     # Draws the faces
     def draw(self):
-        # A compléter en remplaçant pass par votre code
-        pass
-  
+        gl.glPushMatrix()
+        
+        gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL)
+        gl.glRotatef(self.parameters['orientation'],0,0,1)
+        Section.drawEdges(self)
+        
+        for x in self.objects:
+            x.draw()
+            
+        gl.glPopMatrix()
+        
