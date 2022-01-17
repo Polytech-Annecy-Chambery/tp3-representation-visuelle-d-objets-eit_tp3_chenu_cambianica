@@ -36,6 +36,7 @@ class Configuration:
                     
         # Initializes PyGame
         self.initializePyGame()
+        
 
         # Initializes OpenGl
         self.initializeOpenGL()
@@ -71,10 +72,11 @@ class Configuration:
         gl.glMatrixMode(gl.GL_PROJECTION)
         gl.glLoadIdentity()
         glu.gluPerspective(70, (self.screen.get_width()/self.screen.get_height()), 0.1, 100.0)
-
+        
         gl.glMatrixMode(gl.GL_MODELVIEW)
         gl.glLoadIdentity()
-        gl.glTranslatef(0.0,0.0, self.parameters['screenPosition'])       
+        gl.glTranslatef(0.0,0.0, self.parameters['screenPosition']) 
+        gl.glRotatef(-90, 1, 0, 0)
         
     # Getter
     def getParameter(self, parameterKey):
@@ -86,8 +88,7 @@ class Configuration:
         if parameterKey == 'screenPosition':
             self.initializeTransformationMatrix()
         return self    
-
-    # Generates the axis coordinates in the real space        
+       
     def generateCoordinates(self):
         self.vertices = [ 
                 [0, 0, 0 ],
@@ -127,7 +128,7 @@ class Configuration:
             gl.glColor3fv(self.parameters['zAxisColor'])
             gl.glVertex3fv(self.vertices[0])
             gl.glVertex3fv(self.vertices[3]) 
-            
+
             gl.glEnd()      
             
         # Draws the objects if any
@@ -141,19 +142,33 @@ class Configuration:
             gl.glRotate(-2.5, 0, 0, 1)                     
         elif self.event.dict['unicode'] == 'z' or self.event.key == pygame.K_z:
             gl.glRotate(2.5, 0, 0, 1) 
+        elif self.event.dict['unicode'] == '+':
+            gl.glScalef(1.1,1.1,1.1)
+        elif self.event.dict['unicode'] == '-':
+            gl.glScalef(1/1.1,1/1.1,1/1.1)
         
         # Draws or suppresses the reference frame
         elif self.event.dict['unicode'] == 'a' or self.event.key == pygame.K_a:
             self.parameters['axes'] = not self.parameters['axes']
             pygame.time.wait(300)
+        
     
     # Processes the MOUSEBUTTONDOWN event
     def processMouseButtonDownEvent(self):
-        pass
+        if self.event.button == 4 :
+            gl.glScalef(1.1,1.1,1.1)
+        elif self.event.button == 5 :
+            gl.glScalef(1/1.1,1/1.1,1/1.1)
     
     # Processes the MOUSEMOTION event
     def processMouseMotionEvent(self):
-        pass
+        if pygame.mouse.get_pressed()[0]==1:
+            gl.glRotate(self.event.rel[0],1,0, 0)
+            gl.glRotate(self.event.rel[1],0,0,1)
+        elif pygame.mouse.get_pressed()[2]==1:
+            gl.glTranslate(self.event.rel[0]/100,0,0)
+            gl.glTranslate(0,0,self.event.rel[1]/100)
+            
          
     # Displays on screen and processes events    
     def display(self): 
@@ -192,3 +207,7 @@ class Configuration:
             self.draw()
             pygame.event.clear()
             pygame.display.flip()
+            
+    
+        
+        
