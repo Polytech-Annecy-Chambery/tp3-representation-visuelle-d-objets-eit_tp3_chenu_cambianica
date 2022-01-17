@@ -27,8 +27,8 @@ class Opening:
             raise Exception('Parameter "width" required.')
         if 'height' not in self.parameters:
             raise Exception('Parameter "height" required.')
-        if 'thickness' not in self.parameters:
-            raise Exception('Parameter "thickness" required.')    
+        if 'thick' not in self.parameters:
+            raise Exception('Parameter "thick" required.')    
         if 'color' not in self.parameters:
             raise Exception('Parameter "color" required.')  
             
@@ -46,14 +46,73 @@ class Opening:
 
     # Defines the vertices and faces        
     def generate(self):
-        self.vertices = [ 
-                # Définir ici les sommets
+       self.vertices = [ 
+                [0, 0, 0 ], #0
+                [0, 0, self.parameters['height']], #3
+                [self.parameters['width'], 0, self.parameters['height']], #2
+                [self.parameters['width'], 0, 0], #1
+                [0,self.parameters['thick'],0], #4
+                [0,self.parameters['thick'],self.parameters['height']], #5
+                [self.parameters['width'],self.parameters['thick'],0], #6
+                [self.parameters['width'],self.parameters['thick'],self.parameters['height']] #7
+                
+                
                 ]
-        self.faces = [
-                # définir ici les faces
-                ]   
+       self.faces = [
+                [0,3,2,1],
+                [0,1,5,4],
+                [5,4,6,7],
+                [4,6,3,0],
+                [1,5,7,2],
+                [4,5,7,6],
+                ]
+
         
     # Draws the faces                
     def draw(self):        
-        # A compléter en remplaçant pass par votre code
-        pass
+        gl.glPushMatrix()
+        gl.glTranslate(self.parameters['position'][0],self.parameters['position'][1],self.parameters['position'][2])
+        gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL) # on trace les faces : GL_FILL
+        gl.glBegin(gl.GL_QUADS) # Tracé d’un quadrilatère
+        # Couleur gris moyen
+    
+        gl.glColor3fv([255,255, 255])
+        gl.glVertex3fv([0,0,0])
+        gl.glVertex3fv([0,0,self.parameters['height']])
+        gl.glVertex3fv([self.parameters['width'], 0, self.parameters['height']])
+        gl.glVertex3fv([self.parameters['width'], 0, 0])
+        
+        gl.glColor3fv([0.5, 0.5, 0.5])
+        gl.glVertex3fv([0,0,0])
+        gl.glVertex3fv([0, 0, self.parameters['height']])
+        gl.glVertex3fv([0,self.parameters['thick'],self.parameters['height']])
+        gl.glVertex3fv([0,self.parameters['thick'],0])
+        
+        gl.glColor3fv([0.5, 0.5, 0.5])
+        gl.glVertex3fv([0,self.parameters['thick'],self.parameters['height']])
+        gl.glVertex3fv([0,self.parameters['thick'],0])
+        gl.glVertex3fv([self.parameters['width'],self.parameters['thick'],0])
+        gl.glVertex3fv([self.parameters['width'],self.parameters['thick'],self.parameters['height']])
+        
+        gl.glColor3fv([0.5, 0.5, 0.5])
+        gl.glVertex3fv([0,self.parameters['thick'],0])
+        gl.glVertex3fv([self.parameters['width'],self.parameters['thick'],0])
+        gl.glVertex3fv([self.parameters['width'], 0, 0])
+        gl.glVertex3fv([0, 0, 0])
+        
+        gl.glColor3fv([0.5, 0.5, 0.5])
+        gl.glVertex3fv([0, 0, self.parameters['height']])
+        gl.glVertex3fv([0,self.parameters['thick'],self.parameters['height']])
+        gl.glVertex3fv([self.parameters['width'],self.parameters['thick'],self.parameters['height']])
+        gl.glVertex3fv([self.parameters['width'], 0, self.parameters['height']])
+        
+        gl.glColor3fv([255, 255, 255])
+        gl.glVertex3fv([0,self.parameters['thick'],0])
+        gl.glVertex3fv([0,self.parameters['thick'],self.parameters['height']])
+        gl.glVertex3fv([self.parameters['width'],self.parameters['thick'],self.parameters['height']])
+        gl.glVertex3fv([self.parameters['width'],self.parameters['thick'],0])
+        
+        gl.glEnd()
+        gl.glPopMatrix()
+            
+       
